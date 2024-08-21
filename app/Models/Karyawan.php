@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -24,12 +25,19 @@ class Karyawan extends Model
 
     public function remainingLeave()
     {
-        $totalQuota = 12;
-        $yearsWorked = now()->year - $this->tanggal_bergabung->year;
+        $totalAnnualQuota = 12; // Total annual leave quota per year
+        $yearsWorked = now()->year - Carbon::parse($this->tanggal_bergabung)->year;
+
+        // Total leave quota based on the number of years worked
+        $totalLeaveEntitlement = $yearsWorked * $totalAnnualQuota;
+
+        // Total leave taken by the employee
         $totalLeaveTaken = $this->cuti->sum('lama_cuti');
 
-        $remainingLeave = $totalQuota - ($yearsWorked * $totalQuota) + $totalLeaveTaken;
+        // Calculate remaining leave
+        $remainingLeave = $totalLeaveEntitlement - $totalLeaveTaken;
 
+        // Ensure remaining leave is not negative
         return max($remainingLeave, 0);
     }
 }

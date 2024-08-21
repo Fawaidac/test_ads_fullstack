@@ -18,9 +18,9 @@ use Illuminate\Support\Facades\Route;
 // Rute yang memerlukan autentikasi
 Route::middleware('auth:sanctum')->group(function () {
     Route::resource('karyawan', KaryawanController::class);
-    Route::get('karyawan/first-joined', [KaryawanController::class, 'firstJoined']);
-    Route::get('karyawan/with-leave', [KaryawanController::class, 'withLeave']);
-    Route::get('karyawan/remaining-leave', [KaryawanController::class, 'remainingLeave']);
+    Route::get('first-joined', [KaryawanController::class, 'firstJoined']);
+    Route::get('with-leave', [KaryawanController::class, 'withLeave']);
+    Route::get('remaining-leave', [KaryawanController::class, 'remainingLeave']);
 });
 
 // Rute untuk login dan logout

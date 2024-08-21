@@ -17,7 +17,16 @@ class KaryawanCollectionResource extends JsonResource
         return [
             'status' => 'success',
             'message' => 'Data retrieved successfully',
-            'data' => $this->collection,
+            'data' => $this->collection->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'nomor_induk' => $item->nomor_induk,
+                    'nama' => $item->nama,
+                    'alamat' => $item->alamat,
+                    'tanggal_lahir' => $item->tanggal_lahir,
+                    'tanggal_bergabung' => $item->tanggal_bergabung,
+                ];
+            }),
             'pagination' => [
                 'total' => $this->total(),
                 'per_page' => $this->perPage(),

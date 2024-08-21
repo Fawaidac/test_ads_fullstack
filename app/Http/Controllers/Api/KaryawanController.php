@@ -10,11 +10,25 @@ use Illuminate\Http\Request;
 
 class KaryawanController extends Controller
 {
+
     public function index(Request $request)
     {
         $perPage = $request->query('per_page', 10);
         $karyawan = Karyawan::paginate($perPage);
-        return new KaryawanCollectionResource($karyawan);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data retrieved successfully',
+            'data' => $karyawan->items(),
+            'pagination' => [
+                'total' => $karyawan->total(),
+                'per_page' => $karyawan->perPage(),
+                'current_page' => $karyawan->currentPage(),
+                'last_page' => $karyawan->lastPage(),
+                'from' => $karyawan->firstItem(),
+                'to' => $karyawan->lastItem(),
+            ],
+        ]);
     }
 
     public function store(Request $request)
@@ -71,11 +85,22 @@ class KaryawanController extends Controller
         }
     }
 
+
     public function firstJoined()
     {
         $karyawan = Karyawan::orderBy('tanggal_bergabung', 'asc')->take(3)->get();
-        return KaryawanResource::collection($karyawan);
+
+        if ($karyawan->isEmpty()) {
+            return response()->json(['status' => 'error', 'message' => 'No karyawan found'], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data retrieved successfully',
+            'data' => KaryawanResource::collection($karyawan)
+        ]);
     }
+
 
     public function withLeave()
     {
